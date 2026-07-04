@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinicius Valette — Tatuagens sob medida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --ink-soft:#151312;
+    --paper:#f3ede2;
+    --blood:#e0202f;
+    --blood-dark:#8c1218;
+    --brass:#d8ab5f;
+    --muted:#9a9388;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation:none !important; transition:none !important; }
+  }
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    cursor:default;
+  }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--blood); color:#fff; }
+  :focus-visible{ outline:2px solid var(--brass); outline-offset:3px; }
+  .display{ font-family:'Big Shoulders Display', sans-serif; text-transform:uppercase; }
+  .signature{ font-family:'Caveat', cursive; }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:var(--ink); }
+  ::-webkit-scrollbar-thumb{ background:var(--brass); }
+
+  /* grain overlay */
+  #grain{
+    position:fixed; inset:0; z-index:200; pointer-events:none;
+    opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 0.6s steps(2) infinite;
+  }
+  @keyframes grain{ 0%{transform:translate(0,0);} 100%{transform:translate(-2%,2%);} }
+
+  /* ink blob follows cursor */
+  #blob{
+    position:fixed; top:0; left:0; width:36px; height:36px;
+    border-radius:50%; background:var(--blood);
+    filter:blur(14px); opacity:0.55;
+    pointer-events:none; z-index:150;
+    transform:translate(-50%,-50%);
+    mix-blend-mode:screen;
+    will-change:transform;
+  }
+  @media (pointer:coarse){ #blob{ display:none; } }
+
+  /* nav */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:90;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px clamp(18px,5vw,60px);
+    mix-blend-mode:difference;
+  }
+  .logo{
+    font-family:'Big Shoulders Display', sans-serif; font-weight:900;
+    font-size:22px; text-transform:uppercase; letter-spacing:0.03em; color:#fff;
+  }
+  .nav-links{ display:flex; gap:clamp(14px,3vw,32px); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; }
+  .nav-links a{ opacity:0.85; }
+  .nav-links a:hover{ opacity:1; text-decoration:underline wavy; }
+  @media (max-width:640px){ .nav-links{ display:none; } }
+
+  /* hero */
+  header.hero{
+    position:relative; min-height:100vh; overflow:hidden;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 clamp(20px,6vw,90px);
+  }
+  .hero-ghost{
+    position:absolute; top:6%; left:-8%;
+    font-size:clamp(140px,28vw,460px); font-weight:900;
+    color:transparent; -webkit-text-stroke:1.5px rgba(216,171,95,0.12);
+    white-space:nowrap; transform:rotate(-7deg); z-index:0; user-select:none;
+  }
+  .hero-stripe{
+    position:absolute; left:-10%; width:120%; height:min(16vw,140px);
+    background:var(--blood); transform:rotate(-4deg);
+    top:38%; z-index:1;
+  }
+  h1.hero-title{
+    position:relative; z-index:2;
+    font-size:clamp(58px,13vw,180px); line-height:0.84; font-weight:900;
+    max-width:20ch; color:var(--paper);
+  }
+  .eyebrow{
+    position:relative; z-index:2;
+    font-size:12px; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--brass); margin-bottom:20px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:''; width:26px; height:1px; background:var(--brass); }
+  .hero-tagline{
+    position:relative; z-index:2; margin-top:30px; max-width:44ch;
+    font-size:clamp(16px,2vw,19px); color:var(--muted); line-height:1.6;
+  }
+  .hero-cta{
+    position:relative; z-index:2; margin-top:40px; width:fit-content;
+    display:inline-flex; align-items:center; gap:12px;
+    padding:16px 32px; background:var(--paper); color:var(--ink);
+    font-size:13px; letter-spacing:0.1em; text-transform:uppercase; font-weight:600;
+    transform:skewX(-6deg); transition:transform 0.2s ease, background 0.2s ease;
+    border:2px solid var(--paper);
+  }
+  .hero-cta span{ display:inline-block; transform:skewX(6deg); }
+  .hero-cta:hover{ background:var(--blood); border-color:var(--blood); color:#fff; transform:skewX(-6deg) translateY(-3px); }
+
+  /* marquee tape bands */
+  .tape{ position:relative; overflow:hidden; z-index:10; padding:16px 0; border-top:3px solid #000; border-bottom:3px solid #000; }
+  .tape.red{ background:var(--blood); transform:rotate(-1.6deg) scale(1.04); margin:-30px 0; }
+  .tape.gold{ background:var(--brass); transform:rotate(1.3deg) scale(1.04); margin:-30px 0; }
+  .tape-track{
+    display:flex; width:max-content; gap:36px; white-space:nowrap;
+    animation:scrollX 24s linear infinite;
+  }
+  .tape.gold .tape-track{ animation-direction:reverse; animation-duration:20s; }
+  @keyframes scrollX{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .tape-track span{
+    font-family:'Big Shoulders Display', sans-serif; font-weight:900;
+    font-size:clamp(20px,3vw,32px); color:#000; text-transform:uppercase;
+    display:flex; align-items:center; gap:36px;
+  }
+
+  section{ position:relative; z-index:5; padding:130px clamp(20px,6vw,90px); }
+  .section-head{ margin-bottom:60px; }
+  .section-head .kicker{ font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--brass); margin-bottom:10px; }
+  .section-head h2{ font-size:clamp(38px,6vw,72px); font-weight:900; line-height:0.95; }
+
+  /* sobre */
+  #sobre{ background:var(--ink-soft); display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start; }
+  @media (max-width:900px){ #sobre{ grid-template-columns:1fr; } }
+  .video-frame{
+    position:relative; aspect-ratio:16/9; background:#0f0d0c;
+    border:2px solid var(--brass); transform:rotate(-1.5deg);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .video-frame video, .video-frame iframe{ width:100%; height:100%; object-fit:cover; border:none; }
+  .video-placeholder{ text-align:center; color:var(--muted); font-size:13px; line-height:1.7; padding:20px; }
+  .play-icon{ width:60px; height:60px; border:2px solid var(--brass); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; }
+  .play-icon svg{ width:16px; height:16px; fill:var(--brass); margin-left:3px; }
+
+  .bio{ position:relative; }
+  .quote{
+    font-family:'Caveat', cursive; font-size:clamp(34px,4vw,52px); color:var(--blood);
+    transform:rotate(-2deg); line-height:1.15; margin-bottom:30px;
+  }
+  .bio p{ font-size:16px; line-height:1.85; color:var(--muted); margin-bottom:20px; max-width:52ch; }
+  .facts{ display:flex; gap:36px; margin-top:36px; flex-wrap:wrap; }
+  .fact .num{ font-family:'Big Shoulders Display', sans-serif; font-size:44px; font-weight:900; color:var(--brass); line-height:1; }
+  .fact .label{ font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
+
+  /* vitrine masonry */
+  #vitrine{ background:var(--ink); }
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:54px; }
+  .filter-btn{
+    padding:10px 20px; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    border:2px solid var(--muted); background:transparent; color:var(--muted); cursor:pointer;
+    transition:all 0.2s ease; transform:skewX(-6deg);
+  }
+  .filter-btn span{ display:inline-block; transform:skewX(6deg); }
+  .filter-btn:hover{ border-color:var(--brass); color:var(--paper); }
+  .filter-btn.active{ background:var(--blood); border-color:var(--blood); color:#fff; }
+
+  .grid{ columns:3 260px; column-gap:26px; }
+  @media (max-width:700px){ .grid{ columns:1 260px; } }
+  .card{
+    position:relative; break-inside:avoid; display:inline-block; width:100%;
+    margin-bottom:26px; background:var(--paper); color:var(--ink);
+    padding:12px 12px 18px; box-shadow:0 16px 34px rgba(0,0,0,0.45);
+    transition:transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer;
+  }
+  .card:nth-child(5n+1){ transform:rotate(-3deg); }
+  .card:nth-child(5n+2){ transform:rotate(2deg); }
+  .card:nth-child(5n+3){ transform:rotate(-1.2deg); }
+  .card:nth-child(5n+4){ transform:rotate(3.4deg); }
+  .card:nth-child(5n+5){ transform:rotate(-2.6deg); }
+  .card:hover{ transform:rotate(0deg) scale(1.04) translateY(-8px); z-index:20; box-shadow:0 26px 50px rgba(0,0,0,0.6); }
+  .card::before{
+    content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    width:64px; height:22px; background:rgba(216,171,95,0.55);
+  }
+  .card.hidden{ display:none; }
+  .card .photo{
+    width:100%; height:auto; display:block;
+    background:repeating-linear-gradient(135deg,#ddd2b8,#ddd2b8 2px,#d0c3a4 2px,#d0c3a4 4px);
+    min-height:120px;
+    font-size:12px; color:#6b6459; padding:16px; line-height:1.6;
+  }
+  .card .caption{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; }
+  .card .style-tag{ font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--blood); font-weight:700; }
+  .card .mark{ font-family:'Caveat', cursive; font-size:19px; color:#8a8272; }
+
+  /* contato */
+  #contato{ background:var(--ink-soft); text-align:center; }
+  #contato .section-head{ display:flex; flex-direction:column; align-items:center; }
+  #contato p.lead{ max-width:50ch; margin:0 auto 46px; color:var(--muted); font-size:17px; line-height:1.7; }
+  .contact-actions{ display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:70px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; padding:17px 30px;
+    font-size:13px; letter-spacing:0.08em; text-transform:uppercase; font-weight:600;
+    transform:skewX(-6deg); transition:all 0.2s ease; border:2px solid var(--brass);
+  }
+  .btn span{ display:inline-flex; align-items:center; gap:10px; transform:skewX(6deg); }
+  .btn.primary{ background:var(--blood); border-color:var(--blood); color:#fff; }
+  .btn.primary:hover{ background:#fff; color:var(--blood); }
+  .btn.ghost{ color:var(--brass); }
+  .btn.ghost:hover{ background:var(--brass); color:var(--ink); }
+  .btn svg{ width:15px; height:15px; }
+
+  .contact-grid{ display:grid; grid-template-columns:repeat(3,auto); gap:50px; justify-content:center; text-align:left; max-width:800px; margin:0 auto; }
+  @media (max-width:640px){ .contact-grid{ grid-template-columns:1fr; text-align:center; } }
+  .contact-grid .h{ font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--brass); margin-bottom:8px; }
+  .contact-grid .v{ color:var(--muted); font-size:14px; line-height:1.7; }
+
+  footer{ text-align:center; padding:30px; font-size:12px; color:#6b6459; border-top:1px solid rgba(154,147,136,0.15); }
+
+  /* floating whatsapp */
+  #floatwpp{
+    position:fixed; bottom:24px; right:24px; z-index:80;
+    width:58px; height:58px; border-radius:50%;
+    background:var(--blood); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 24px rgba(224,32,47,0.5);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  #floatwpp svg{ width:26px; height:26px; fill:#fff; }
+  @keyframes pulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
+</style>
+</head>
+<body>
+
+<div id="grain"></div>
+<div id="blob"></div>
+
+<nav>
+  <div class="logo">tinta&amp;agulha</div>
+  <div class="nav-links">
+    <a href="#vitrine">Vitrine</a>
+    <a href="#sobre">Vídeo &amp; Sobre</a>
+    <a href="#contato">Contato</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-ghost">TODOS OS ESTILOS</div>
+  <div class="hero-stripe"></div>
+  <p class="eyebrow">Estúdio autoral — sem estilo fixo, só assinatura</p>
+  <h1 class="hero-title display">Vinicius <br>Valette</h1>
+  <p class="hero-tagline">Fine line, blackwork, old school, realismo — a mão é uma só, mas o repertório não tem teto. Cada peça nasce de conversa, não de catálogo.</p>
+  <a href="#vitrine" class="hero-cta"><span>Ver o trabalho ↓</span></a>
+</header>
+
+<div class="tape red">
+  <div class="tape-track">
+    <span>★ AGENDA ABERTA</span><span>★ TATUAGEM SOB MEDIDA</span><span>★ TODOS OS ESTILOS</span><span>★ AGENDA ABERTA</span><span>★ TATUAGEM SOB MEDIDA</span><span>★ TODOS OS ESTILOS</span>
+  </div>
+</div>
+
+<section id="sobre">
+  <div class="video-frame">
+    <!-- TROCAR AQUI: substitua por <video controls src="imagens/video-apresentacao.mp4"></video> ou <iframe> do YouTube/Instagram -->
+    <div class="video-placeholder">
+      <video controls src="imagens/video.mp4"></video>
+    </div>
+  </div>
+  <div class="bio">
+    <p class="quote">"tatuagem boa não segue regra, segue a pele."</p>
+    <p>[Escreva aqui uma abertura forte: quem é ele, há quanto tempo tatua, o que o diferencia.]</p>
+    <p>[Trajetória — onde aprendeu, estúdios por onde passou, o que busca em cada desenho antes de tatuar.]</p>
+    <div class="facts">
+      <div class="fact"><div class="num">[5 ]</div><div class="label">anos tatuando</div></div>
+      <div class="fact"><div class="num">[354.000]</div><div class="label">tatuagens feitas</div></div>
+      <div class="fact"><div class="num">Todos</div><div class="label">os estilos</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="tape gold">
+  <div class="tape-track">
+    <span>FINE LINE</span><span>BLACKWORK</span><span>OLD SCHOOL</span><span>REALISMO</span><span>COLORIDA</span><span>FINE LINE</span><span>BLACKWORK</span><span>OLD SCHOOL</span><span>REALISMO</span><span>COLORIDA</span>
+  </div>
+</div>
+
+<section id="vitrine">
+  <div class="section-head">
+    <div class="kicker">Vitrine</div>
+    <h2 class="display">Na pele,<br>não no papel</h2>
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="todos"><span>Todos</span></button>
+    <button class="filter-btn" data-filter="fineline"><span>Fine line</span></button>
+    <button class="filter-btn" data-filter="blackwork"><span>Blackwork</span></button>
+    <button class="filter-btn" data-filter="oldschool"><span>Old school</span></button>
+    <button class="filter-btn" data-filter="realismo"><span>Realismo</span></button>
+    <button class="filter-btn" data-filter="color"><span>Colorida</span></button>
+  </div>
+  <!-- TROCAR AQUI: troque cada .photo por uma <img src="..."> real e ajuste data-style -->
+  <div class="grid" id="grid">
+    <div class="card" data-style="fineline"><img class="photo" src="imagens/tatto.jpg" alt="Tatuagem fine line 01"><div class="caption"><span class="style-tag">Fine line</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="blackwork"><img class="photo" src="imagens/tatto_4.jpg" alt="Tatuagem blackwork 01"><div class="caption"><span class="style-tag">Blackwork</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="oldschool"><img class="photo" src="imagens/tatto_2.jpg" alt="Tatuagem old school 01"><div class="caption"><span class="style-tag">Old school</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="realismo"><img class="photo" src="imagens/tatto_3.jpg" alt="Tatuagem realismo 01"><div class="caption"><span class="style-tag">Realismo</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="color"><img class="photo" src="imagens/tatto_4.jpg" alt="Tatuagem colorida 01"><div class="caption"><span class="style-tag">Colorida</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="fineline"><img class="photo" src="imagens/tatto_5.jpg" alt="Tatuagem fine line 02"><div class="caption"><span class="style-tag">Fine line</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="blackwork"><img class="photo" src="imagens/tatto_6.jpg" alt="Tatuagem blackwork 02"><div class="caption"><span class="style-tag">Blackwork</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="realismo"><img class="photo" src="imagens/tatto_7.jpg" alt="Tatuagem realismo 02"><div class="caption"><span class="style-tag">Realismo</span><span class="mark">t&amp;a</span></div></div>
+    <div class="card" data-style="oldschool"><img class="photo" src="imagens/tatto.jpg" alt="Tatuagem old school 02"><div class="caption"><span class="style-tag">Old school</span><span class="mark">t&amp;a</span></div></div>
+  </div>
+</section>
+
+<section id="contato">
+  <div class="section-head">
+    <div class="kicker">Agende sua tattoo</div>
+    <h2 class="display">Vamos criar<br>a sua peça</h2>
+  </div>
+  <p class="lead">Conta a ideia, o tamanho e o local do corpo — resposta costuma sair em até 24h com um horário disponível.</p>
+  <div class="contact-actions">
+    <a href="https://wa.me/55SEUNUMEROAQUI" class="btn primary">
+      <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.9 8.9 0 0 0 3.2 16.9L2 22l5.2-1.2A8.9 8.9 0 1 0 17.6 6.3zm-5.6 14a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.7-2.7-.2-.3a7.4 7.4 0 1 1 6.4 3.5zm4-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.5.1s-.6.7-.7.8c-.1.1-.3.1-.5 0a6 6 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.4-.4.2-.4v-.4c0-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2c0 1.2.9 2.4 1 2.5.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.6.6.2 1.2.1 1.6.1.5-.1 1.3-.5 1.5-1 .2-.5.2-.9.1-1z"/></svg>Chamar no WhatsApp</span>
+    </a>
+    <a href="https://instagram.com/SEUINSTAGRAM" class="btn ghost">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>@seuinstagram</span>
+    </a>
+  </div>
+  <div class="contact-grid">
+    <div><div class="h">Estúdio</div><div class="v">[Endereço do estúdio]<br>[Cidade — Estado]</div></div>
+    <div><div class="h">Horário</div><div class="v">[Ter–Sáb, 10h–19h]<br>[Agendamento por WhatsApp]</div></div>
+    <div><div class="h">Redes</div><div class="v">Instagram: @seuinstagram<br>WhatsApp: (XX) XXXXX-XXXX</div></div>
+  </div>
+</section>
+
+<footer>© 2026 [Nome do Tatuador]. Todos os desenhos e fotos pertencem ao artista.</footer>
+
+<a id="floatwpp" href="https://wa.me/55SEUNUMEROAQUI" aria-label="Chamar no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.6 6.3A8.9 8.9 0 0 0 3.2 16.9L2 22l5.2-1.2A8.9 8.9 0 1 0 17.6 6.3zm-5.6 14a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.7-2.7-.2-.3a7.4 7.4 0 1 1 6.4 3.5zm4-5.5c-.2-.1-1.3-.6-1.5-.7-.2-.1-.4-.1-.5.1s-.6.7-.7.8c-.1.1-.3.1-.5 0a6 6 0 0 1-1.8-1.1 6.7 6.7 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.4-.4.2-.4v-.4c0-.1-.5-1.3-.7-1.7-.2-.5-.4-.4-.5-.4h-.4a.9.9 0 0 0-.6.3 2.7 2.7 0 0 0-.9 2c0 1.2.9 2.4 1 2.5.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.6.6.2 1.2.1 1.6.1.5-.1 1.3-.5 1.5-1 .2-.5.2-.9.1-1z"/></svg>
+</a>
+
+<script>
+  const buttons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      cards.forEach(card => {
+        const match = filter === 'todos' || card.dataset.style === filter;
+        card.classList.toggle('hidden', !match);
+      });
+    });
+  });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(pointer:fine)').matches;
+  const blob = document.getElementById('blob');
+  if (!reduceMotion && finePointer){
+    let mx=0,my=0,bx=0,by=0;
+    window.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+    function loop(){
+      bx += (mx-bx)*0.18; by += (my-by)*0.18;
+      blob.style.transform = `translate(${bx}px, ${by}px) translate(-50%,-50%)`;
+      requestAnimationFrame(loop);
+    }
+    loop();
+  } else if (blob){
+    blob.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
